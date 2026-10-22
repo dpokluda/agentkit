@@ -56,6 +56,17 @@ Move attached comments and attributes with fields, and do not add redundant capt
 Keep constants, static members, and runtime state in separate logical groups.
 Preserve guard behavior and order, base-constructor requirements, initializer dependencies, and side effects rather than forcing cosmetic assignment order.
 
+## PowerShell Scripts
+
+Prefer simple, working scripts built from standard PowerShell cmdlets and straightforward control flow.
+Use lower-level APIs, extra helpers, or abstractions only when a concrete requirement makes them necessary or meaningfully clearer.
+Keep complexity proportional to the real task, not imagined future cases.
+Do not turn a small script into a framework or add speculative configuration, parameters, backups, rollback, or recovery mechanisms.
+
+Simplicity must preserve correctness, safety, useful errors, and existing user work.
+Verify the script's actual documented behavior and entry points.
+A mocked call or successful preview is not full filesystem validation; disclose validation limitations and never claim unperformed checks passed.
+
 ## Documentation and Comments
 
 For production APIs, write concise, meaningful documentation for every publicly accessible class, struct, interface, enum, delegate, constructor, method,
