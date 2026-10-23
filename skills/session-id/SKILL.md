@@ -36,7 +36,7 @@ may not be written yet.
 
 Lead with the one that matters:
 
-> **Session ID: `<uuid>`** — "<name>"
+> session-id: `<uuid>`** — "<name>"
 
 Then the others, only if asked or if more than one is present:
 

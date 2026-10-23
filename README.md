@@ -14,8 +14,8 @@ A personal collection of tools, agents, skills, and instructions to support agen
   Each skill directory includes its `SKILL.md` and any helper scripts.
 - **`scripts/`**: Local environment setup, starting with `Install-AgentKit.ps1`.
 - **`templates/`**: Starter repository instructions, including `AGENTS.md`.
-- **`tests/`**: Self-contained PowerShell installer regression tests.
-- **`tools/`**: Reserved for other tools supporting agentic workflows; no worktree CLI is implemented here.
+- **`tests/`**: PowerShell installer/handoff regression tests and .NET workspace tests.
+- **`tools/`**: The `workspaces` CLI and explicit checkpoint/local-verification helpers, separate from profile installation.
 
 ## Usage
 
@@ -23,7 +23,7 @@ The components are intended to be used independently or combined as needed, depe
 
 This public set includes the `firstmate` and `principal-strategy-reviewer` agent profiles.
 The shared skills are `csharp-stylefix`, `csharp-xmldoc`, `instruction-review`, `session-checkpoint`, `session-id`, `strategy-review`,
-`technical-whitepaper`, and `teams-thread-extract`.
+`technical-whitepaper`, `teams-thread-extract`, and `worktree-management`.
 The session-ID and Teams skills include their local helper scripts.
 
 The current `study-book-author` family is deliberately excluded as a unit, including its agent profiles, skill, and reference workflows.
@@ -38,7 +38,7 @@ Use **PowerShell 7** and a stable source checkout.
 `scripts/Install-AgentKit.ps1` defaults `-ContentRoot` to its parent AgentKit directory, not the caller's working directory.
 An explicit relative `-ContentRoot` is resolved against the caller before the script navigates to `-HomeRoot`.
 The name describes its purpose: configuring local agent profiles with links to the authoring source.
-It does not configure models, MCP registrations, credentials, or tool permissions.
+It does not configure models, MCP registrations, credentials, or tool permissions, or install .NET tools and their dependencies.
 
 From this checkout, preview and optionally exercise a temporary profile:
 
@@ -130,7 +130,9 @@ Root-level `OPINIONS.md` and `VOICE.md` are consulted through GLOBAL's direction
 Description-only frontmatter does not provide universal task-conditional loading.
 Separating the files improves maintenance but does not, by itself, reduce context use.
 
-Firstmate requires a host with app-native project and isolated-session tools.
+Firstmate uses the host's supported native project and isolated-session tools for workers.
+Workspace allocation is separate from worker execution; a leased checkout does not make a native app worker run there.
+No external worker runner or automatic checkpoint hook is supplied.
 The session-ID skill uses the current host's session tools and reports unavailable data rather than inventing it.
 Teams extraction requires a separately configured, authorized WorkIQ connector; its renderer uses Python 3.10+ and the standard library.
 The public procedures and helpers contain no actual conversations or credentials.
@@ -152,12 +154,43 @@ Checkpoint: <approved private path or persistent session-artifact convention>
 Deliverable: a review-ready worktree, with evidence and an honest continuation point
 ```
 
-The companion `session-checkpoint` and `instruction-review` skills preserve authorized execution state and propose evidence-backed improvements.
-They do not create a second task tracker or automatically change standing policy.
+The companion `worktree-management` skill inventories worktrees, distinguishes lifecycle ownership, and preserves allocated candidates.
+The `session-checkpoint` and `instruction-review` skills preserve authorized execution state and propose evidence-backed improvements.
+Use real returned paths and IDs, report missing or stale evidence, and keep proposed instruction edits separate from approved policy.
+These skills do not create a second task tracker or automatically change standing policy.
 An existing spec is not authorization to implement it, and an experiment is not acceptance of its design.
 Rehearse discovery, local validation, and actual host permission boundaries before an unattended run.
 These definitions do not sandbox tools, enforce spending limits, schedule jobs, install an orchestration stack, or authorize publication.
 This is the local coordinator profile, not an installation of Kun's full Firstmate distro.
+
+## Local workflow tools
+
+The [workspaces tool](tools/workspaces/README.md) targets Windows/local disks and uses .NET 10, System.CommandLine, and installed Git.
+It registers existing clones, inventories worktrees, allocates bounded fresh slots with durable leases, and releases candidates into retained state.
+Retained slots still consume capacity; recycling, removal, and an external worker runner are not implemented.
+State defaults to `%LOCALAPPDATA%\AgentKit\workspaces`, outside source checkouts, with an explicit `--state-root` override.
+The standalone CLI reports unknown app/session metadata rather than inferring it from worktree names.
+
+From this checkout with the .NET 10 SDK, build, test, pack, or inspect source-command help:
+
+```powershell
+dotnet build .\tools\workspaces\Workspaces.csproj
+dotnet test .\tests\Workspaces.Tests\Workspaces.Tests.csproj
+dotnet pack .\tools\workspaces\Workspaces.csproj --configuration Release
+dotnet run --project .\tools\workspaces\Workspaces.csproj -- --help
+```
+
+These source commands may restore NuGet dependencies.
+The workspace tests additionally require PowerShell 7.
+Packing creates `AgentKit.Workspaces`; it does not install the tool.
+Use the tool README for installation, CLI/JSON examples, exit codes, and limitations.
+
+The [handoff helpers](tools/handoff/README.md) require PowerShell 7 and explicit, authorized private destinations.
+`Save-Checkpoint.ps1` preserves the authored resume note and observed candidate; `Get-CheckpointStatus.ps1` checks that one named record.
+`Invoke-LocalVerification.ps1` runs one approved native command and records its candidate basis, exit code, and separate output logs.
+Use a new evidence directory with an existing parent outside source checkouts.
+Missing or stale evidence remains visible; these helpers do not schedule capture, discover all checkpoints, or apply instruction proposals.
+The `session-checkpoint` skill shows the handoff workflow without replacing Spec Kit task state.
 
 ## Validate the installer
 

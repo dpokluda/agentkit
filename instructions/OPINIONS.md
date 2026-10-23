@@ -10,10 +10,17 @@ explain when evidence favors an exception.
 
 ## Readability, Maintainability, and Design
 
-Readability and long-term maintainability are primary design goals, subject to correctness, security, performance requirements, and operational safety.
-Favor code that another engineer can understand without tracing layers of indirection. Avoid abstractions, interfaces, wrappers, configuration, factories,
-and custom types unless they serve a concrete purpose. Some small duplication is often better than a generalized mechanism that obscures behavior. Prefer
-cohesive helpers and clear ownership over mechanical DRY or minimum line count.
+Simplicity is the core engineering principle: optimize for readability and long-term maintainability, not cleverness or minimum line count.
+Build the smallest solution that meets the present need while preserving correctness, security, and operational safety.
+Do not implement speculative features, compatibility layers, or extension points for possible future requirements.
+Favor code that another engineer can understand without tracing layers of indirection.
+Avoid abstractions, interfaces, wrappers, configuration, factories, and custom types unless they serve a concrete present requirement.
+Some small duplication is often better than a generalized mechanism that obscures behavior.
+Prefer cohesive helpers and clear ownership over mechanical DRY.
+
+Separate logical steps with blank lines so the flow is visible without reading every statement.
+Use short comments to explain non-obvious intent, invariants, or transitions in longer methods; do not leave dense walls of code.
+Simplify unclear code before adding comments to explain it.
 
 Treat code smells as useful signals, not automatic refactoring orders. Refactor when the result becomes easier to understand, change, or test; do not
 launch unrelated cleanup during a focused fix. Follow existing repository conventions unless a specific improvement justifies departure.
@@ -31,6 +38,7 @@ Do not impose another repository's copyright or license header.
 For new C# files, use file-scoped namespaces.
 Do not rewrite unrelated existing namespace declarations solely to enforce this convention.
 Use an explicit `Main` entry point rather than top-level statements, and prefer controller-based ASP.NET Core APIs over Minimal APIs.
+Prefer traditional block-bodied methods, including `Main`, over expression-bodied methods.
 Always use braces for `if`, `else`, loops, and other control-flow statements, even when the body is a single line.
 
 Target roughly 120 characters per code line, allowing up to 160 when clearer, unless the repository specifies otherwise.
@@ -62,6 +70,8 @@ Prefer simple, working scripts built from standard PowerShell cmdlets and straig
 Use lower-level APIs, extra helpers, or abstractions only when a concrete requirement makes them necessary or meaningfully clearer.
 Keep complexity proportional to the real task, not imagined future cases.
 Do not turn a small script into a framework or add speculative configuration, parameters, backups, rollback, or recovery mechanisms.
+For ordinary local/helper functions, declare parameters inline, as in `function Get-Value([string]$Name) { ... }`, rather than in a `param(...)` block.
+Keep `param(...)` for script entry points and advanced functions that use attributes such as `CmdletBinding`.
 
 Simplicity must preserve correctness, safety, useful errors, and existing user work.
 Verify the script's actual documented behavior and entry points.
@@ -73,6 +83,9 @@ For production APIs, write concise, meaningful documentation for every publicly 
 property, and other public member, documenting parameters, type parameters, and return values where applicable. In C#, follow the repository's XML
 documentation conventions, and use `inheritdoc` only when an actual inherited contract provides sufficient documentation. Avoid empty tags, boilerplate
 descriptions, and restating names without explaining the contract.
+
+Major internal components and data structures also need concise documentation explaining their purpose and important ownership or lifecycle rules.
+Internal visibility is not a reason to leave the design undocumented.
 
 Ordinary test classes and test methods do not need public API documentation. Add concise explanation when a test's purpose, setup, or behavior is not
 straightforward. Prefer readable identifiers over commentary that repeats the code. Where a method contains non-obvious control flow, an invariant, a

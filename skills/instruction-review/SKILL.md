@@ -60,16 +60,23 @@ Check for duplicates and conflicting instructions before proposing an addition.
 Prefer rewriting one existing entry or referencing its authoritative owner over adding another near-duplicate rule.
 Do not introduce a new file, framework, memory tier, archive, or skill merely to give every finding a destination.
 
-For each useful candidate, report:
+Use the authorized checkpoint's instruction-proposals section, or return the same compact record inline.
+A separate report or learning executable is not required.
 
-- The observed problem or accepted decision.
-- Evidence references, a safe minimal quotation when appropriate, and what remains unverified.
-- Proposed scope and exact existing destination, or an unresolved ownership question.
-- The minimal proposed diff or a concrete mechanical guard to implement separately.
-- Why the existing mechanism is insufficient and whether the change still requires approval.
+```text
+Coverage: <current job, checkpoint, queried history, and gaps>
+Finding: <proposed | already covered | needs clarification | not supported>
+Issue or decision: <observed problem or accepted decision>
+Evidence: <safe references; what remains unverified>
+Scope and owner: <narrowest scope and exact canonical destination>
+Minimal change: <proposed diff or mechanical guard; why the existing owner is insufficient>
+Approval: <pending | explicit approval reference; unapplied or applied>
+```
+
+Keep one record per useful candidate; link an existing proposal instead of copying it at every handoff.
+If no reusable proposal is justified, record "none identified" and the review's coverage rather than inventing an improvement.
 
 Distinguish `proposed`, `already covered`, `needs clarification`, and `not supported`.
-If there are no justified candidates, say so briefly.
 A clean review does not certify complete history coverage or prove that no future mistakes will occur.
 
 ## Apply only after specific approval
