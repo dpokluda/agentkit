@@ -70,8 +70,16 @@ Prefer simple, working scripts built from standard PowerShell cmdlets and straig
 Use lower-level APIs, extra helpers, or abstractions only when a concrete requirement makes them necessary or meaningfully clearer.
 Keep complexity proportional to the real task, not imagined future cases.
 Do not turn a small script into a framework or add speculative configuration, parameters, backups, rollback, or recovery mechanisms.
+Readability and long-term maintainability matter more than edge-case handling: check what can realistically go wrong, not every unlikely input or state.
 For ordinary local/helper functions, declare parameters inline, as in `function Get-Value([string]$Name) { ... }`, rather than in a `param(...)` block.
 Keep `param(...)` for script entry points and advanced functions that use attributes such as `CmdletBinding`.
+
+Prefer plain `.ps1` files, and use a `.psm1` module only when it is clearly the better fit.
+When several entry points share code, keep each entry-point script thin and dot-source one shared helper `.ps1`.
+Give every entry-point script comment-based help that explains its purpose, each parameter, and an example.
+Split the work into small functions with clear Verb-Noun names, so that the main flow reads as a short list of steps.
+Stop on errors with `$ErrorActionPreference = 'Stop'`, check `$LASTEXITCODE` after native commands, and throw short messages that say what to do next.
+The readability rules above apply to scripts too: separate steps with blank lines, and comment unusual or non-obvious parts.
 
 Simplicity must preserve correctness, safety, useful errors, and existing user work.
 Verify the script's actual documented behavior and entry points.

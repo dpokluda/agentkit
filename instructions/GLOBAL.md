@@ -26,13 +26,16 @@ Ask when authorization is unclear.
 
 ## Engineering Opinions
 
-When working on software design, implementation, debugging, refactoring, testing, or code review, consult and follow `OPINIONS.md` alongside this file in
-AgentKit's `instructions/` directory.
-The installer also links it to `~/.copilot/OPINIONS.md` and `~/.claude/OPINIONS.md`.
+When working on software design, implementation, debugging, refactoring, testing, or code review, follow `OPINIONS.md`, a separate file next to this one.
+Claude Code imports it here: @OPINIONS.md
+Other agents, including GitHub Copilot, do not load it with this file.
+They must read `~/.copilot/OPINIONS.md` in full at the start of such a task, before planning or editing.
 Apply these preferences unless more specific repository requirements or technical constraints justify an exception.
 
 ## Writing Voice
 
-When writing or revising material on my behalf, consult and follow `VOICE.md` alongside this file in AgentKit's `instructions/` directory.
-The installer also links it to `~/.copilot/VOICE.md` and `~/.claude/VOICE.md`.
+When writing or revising material on my behalf, follow `VOICE.md`, a separate file next to this one.
+Claude Code imports it here: @VOICE.md
+Other agents, including GitHub Copilot, do not load it with this file.
+They must read `~/.copilot/VOICE.md` in full before writing or revising such material.
 This applies to technical documents, specifications, design proposals, code comments, emails, and other prose.

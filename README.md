@@ -12,10 +12,10 @@ A personal collection of tools, agents, skills, and instructions to support agen
   Runtime capture stays in an authorized private project or persistent session-artifact area outside this public repository.
 - **`skills/`**: Reusable capabilities and workflows that agents can invoke.
   Each skill directory includes its `SKILL.md` and any helper scripts.
-- **`scripts/`**: Local environment setup, starting with `Install-AgentKit.ps1`.
+- **`scripts/`**: Local agent-profile setup through `Install-AgentKit.ps1`.
 - **`templates/`**: Starter repository instructions, including `AGENTS.md`.
 - **`tests/`**: PowerShell installer/handoff regression tests and .NET workspace tests.
-- **`tools/`**: The `workspaces` CLI and explicit checkpoint/local-verification helpers, separate from profile installation.
+- **`tools/`**: Specify helpers, the `workspaces` CLI, and checkpoint/local-verification helpers, separate from profile installation.
 
 ## Usage
 
@@ -31,6 +31,34 @@ It needs a separate public-only extraction rather than shipping references to pr
 The current `ado-pr-review` and `investigate-icm` agents are also excluded.
 Work-specific content belongs in a separately reviewed private overlay, not in this repository or behind a public `.gitignore`.
 The public installer does not create or compose private content.
+
+## Spec Kit helpers
+
+The three Specify helpers in `tools/specify/` are standalone PowerShell scripts, separate from the agent-profile installer.
+See [what Specify and Spec Kit are](tools/specify/README.md) for the distinction between the CLI, repository setup, and coding-agent workflow.
+Use PowerShell 7; on a new Windows machine, install it with `winget install --id Microsoft.PowerShell --exact`, then start `pwsh`.
+
+- `tools/specify/install-specify.ps1` installs the latest stable CLI from its official GitHub release.
+  It requires Git, uv, and Python 3.11 or newer, and reports a command for any missing prerequisite rather than installing it automatically.
+  It refuses to replace an existing Specify installation and does not initialize a repository or change PATH.
+- `tools/specify/check-specify.ps1` checks repository versions locally with `-Repo` and checks the latest CLI release with `-Global`.
+- `tools/specify/update-specify.ps1` updates repository integrations and shared assets with `-Repo`, or the uv-managed CLI with `-Global`.
+  Use `-Force` only after reviewing modified repository-managed files; `-WhatIf` previews updates.
+
+Check and update default to `-Repo`; both scopes can be selected together.
+Run repository operations from the target repository root, invoking the helpers by their full paths or after adding `tools/specify/` to PATH.
+The profile installer does not add the scripts to PATH.
+CLI installation and global updates preserve the configured package indexes for dependencies.
+Repository updates leave authored specs, plans, and the constitution unchanged; optional extensions and presets are not updated by these helpers.
+
+On a new machine, run from this AgentKit checkout:
+
+```powershell
+pwsh -NoProfile -File .\tools\specify\install-specify.ps1 -WhatIf
+pwsh -NoProfile -File .\tools\specify\install-specify.ps1
+```
+
+The installer verifies the executable even when its directory is not yet on PATH and prints the command to add it when needed.
 
 ## Install into an isolated profile first
 
@@ -125,8 +153,9 @@ In Copilot CLI, use `/instructions`; in VS Code, inspect Agent Customizations an
 In Claude Code, use the corresponding built-in memory, rule, agent, and skill discovery commands.
 
 `GLOBAL.md` describes when to consult the engineering and writing preferences.
-Those references are not a universal file-import syntax.
-Root-level `OPINIONS.md` and `VOICE.md` are consulted through GLOBAL's directions, not installed as automatically loaded modular rules.
+Claude Code loads both files through the `@OPINIONS.md` and `@VOICE.md` imports in `GLOBAL.md`.
+Copilot CLI has no import syntax, so `GLOBAL.md` tells other agents to read both files at the start of the relevant work.
+Root-level `OPINIONS.md` and `VOICE.md` are not installed as automatically loaded modular rules.
 Description-only frontmatter does not provide universal task-conditional loading.
 Separating the files improves maintenance but does not, by itself, reduce context use.
 
