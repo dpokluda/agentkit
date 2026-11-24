@@ -43,6 +43,7 @@ and wrap each in prose that *introduces* it ("Written out, the update rule looks
 *interprets* it afterward ("What that term is really doing is penalizing large weights…"). Never drop a
 useful table to be "narrative," and never leave one sitting there unexplained. Preserve source
 excerpts accurately and label adaptations or reconstructions rather than presenting them as verbatim.
+Throughout the book and its companions, use `$...$` for inline math and `$$` on separate lines around display math, not `\(...\)` or `\[...\]`.
 
 **Open each module with framing, not objectives.** Start with a short prose paragraph that sets up why
 this module matters and where it sits in the arc, followed by the single prerequisite as a `>`
